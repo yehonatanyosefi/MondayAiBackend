@@ -5,7 +5,8 @@ const aiService = require('./ai.service')
 const logger = require('../../services/logger.service')
 
 async function prompt(req, res) {
-	const { prompt } = req.body
+	// const { prompt } = req.body
+	const prompt = `What is the best insights I can get from this board?`
 	try {
 		await initializeVars()
 		const response = await llmService.query(prompt)

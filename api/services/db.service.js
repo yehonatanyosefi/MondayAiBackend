@@ -6,56 +6,55 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const EMBEDDING = new OpenAIEmbeddings()
-let gClientIndex = null
-let gPineconeArgs = null
 
 async function uploadToPinecone(inputs, boardId) {
-	console.log("file: db.service.js:17 -> uploadToPinecone -> boardId:", boardId)
 	try {
-		if (!gClientIndex) await _initClient(boardId)
-		uploadTexts([inputs])
+		await _initClient(boardId)
+		await uploadTexts([inputs], boardId)
 		// if (typeof inputs[0] === 'string') {
-		// 	await uploadTexts(inputs)
+		// 	await uploadTexts([inputs], boardId)
 		// 	return
 		// }
-		// await uploadDocs(inputs)
-		return
+		// await uploadDocs([inputs], boardId)
 	} catch (err) {
 		console.log('Error Uploading to Pinecone', err)
 		throw err
 	}
 }
 
-async function uploadDocs(docs) {
-	await PineconeStore.fromDocuments(docs, EMBEDDING, gPineconeArgs)
+async function uploadDocs(docs, boardId) {
+	const pineconeArgs = await _getPineconeArgs(boardId)
+	await PineconeStore.fromDocuments(docs, EMBEDDING, pineconeArgs)
 }
 
-async function uploadTexts(texts) {
-	await PineconeStore.fromTexts(texts, [], EMBEDDING, gPineconeArgs)
+async function uploadTexts(texts, boardId) {
+	const pineconeArgs = await _getPineconeArgs(boardId)
+	await PineconeStore.fromTexts(texts, [], EMBEDDING, pineconeArgs)
 }
 
-async function getVectorStore() {
-	if (!gClientIndex) await _initClient()
-	const vectorStore = await PineconeStore.fromExistingIndex(EMBEDDING, gPineconeArgs)
+async function getVectorStore(boardId) {
+	const pineconeArgs = await _getPineconeArgs(boardId)
+	const vectorStore = await PineconeStore.fromExistingIndex(EMBEDDING, pineconeArgs)
 	return vectorStore
 }
 
-async function _initClient(boardId) {
+async function _getPineconeArgs(boardId) {
 	try {
-		if (gClientIndex) return
-		const client = new PineconeClient()
-
 		if (!process.env.PINECONE_ENVIRONMENT_REGION || !process.env.PINECONE_API_KEY) {
 			throw new Error('Pinecone environment or api key vars missing')
 		}
+
+		const client = new PineconeClient()
+
 		await client.init({
 			apiKey: process.env.PINECONE_API_KEY,
 			environment: process.env.PINECONE_ENVIRONMENT_REGION,
 		})
+
 		const clientIndex = client.Index(process.env.PINECONE_INDEX)
-		gClientIndex = clientIndex
-		gPineconeArgs = {
-			pineconeIndex: gClientIndex,
+
+		return {
+			pineconeIndex: clientIndex,
 			namespace: boardId.toString(),
 		}
 	} catch (err) {

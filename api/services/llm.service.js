@@ -8,11 +8,6 @@ dotenv.config()
 
 const LLM_MODEL = 'gpt-3.5-turbo'
 
-let gModel = null
-let gChain = null
-let gOptions = null
-let gCallType = 'question'
-let gHistoryType = 'chat_history'
 let gChatHistory = ``
 
 module.exports = {
@@ -22,29 +17,20 @@ module.exports = {
 
 async function query(prompt) {
 	try {
-		const promptFromTemplate = new PromptTemplate({
-			inputVariables: ['chat_history', 'input'],
-			template: `You are a """friendly monday board AI chatbot""" you will only answer as this role.
-			
-You must provide lots of specific details from the board context provided.
-
-History of our conversation:
-{chat_history}
-Current Conversation:
-Human: {input}
-AI:`,
-		})
+		const promptFromTemplate = getPromptTemplate()
 		const formattedPrompt = await promptFromTemplate.format({
 			chat_history: gChatHistory,
 			input: prompt,
 		})
-		const response = await gChain.call({ [gCallType]: formattedPrompt, [gHistoryType]: gChatHistory })
-		console.log({
-			output: response.text,
-			sourceDocuments: response.sourceDocuments,
-		})
-		gChatHistory += `user:${prompt}\n`
-		gChatHistory += `ai:${response?.text || response?.response}\n`
+		const chain = await getConversationalRetrievalChain()
+		const response = await chain.call({ question: formattedPrompt, chat_history: gChatHistory })
+		// console.log({
+		// 	output: response.text,
+		// 	sourceDocuments: response.sourceDocuments,
+		// })
+		if (!response?.text) throw new Error('No response text')
+		gChatHistory += `Human:${prompt}\n`
+		gChatHistory += `AI:${response.text}\n`
 		return response
 	} catch (error) {
 		console.error('An error occurred while querying:', error)
@@ -55,59 +41,34 @@ AI:`,
 async function getConversationalRetrievalChain() {
 	try {
 		const vectorStore = await dbService.getVectorStore()
-		if (!gModel) {
-			throw new Error('gModel is not initialized')
-		}
-
-		return ConversationalRetrievalQAChain.fromLLM(gModel, vectorStore.asRetriever(), {
-			// k: 4,
-			returnSourceDocuments: true,
-		})
+		return ConversationalRetrievalQAChain.fromLLM(
+			new ChatOpenAI({
+				modelName: LLM_MODEL,
+				temperature: 0,
+			}),
+			vectorStore.asRetriever(),
+			{
+				// k: 4,
+				returnSourceDocuments: true,
+			}
+		)
 	} catch (error) {
 		console.error('An error occurred while getting conversational retrieval chain:', error)
 		throw error
 	}
 }
 
-async function initializeVars({
-	temperature = 0,
-	streaming = false,
-	queryVector = true,
-	memoryOption = false,
-}) {
-	const newOptions = { temperature, streaming, queryVector, memoryOption }
+function getPromptTemplate() {
+	return new PromptTemplate({
+		inputVariables: ['chat_history', 'input'],
+		template: `You are a """friendly monday board AI chatbot""" you will only answer as this role.
+			
+You must provide lots of specific details from the board context provided.
 
-	gOptions = newOptions
-	const llmOptions = {
-		modelName: LLM_MODEL,
-		temperature,
-		streaming,
-		// callbacks: !streaming
-		// 	? undefined
-		// 	: [
-		// 			{
-		// 				handleLLMNewToken(token) {
-		// 					sse.send(token, 'newToken')
-		// 				},
-		// 			},
-		// 	  ],
-	}
-
-	gModel = new ChatOpenAI(llmOptions)
-	gChain = await getConversationalRetrievalChain()
+History of our conversation:
+{chat_history}
+Current Conversation:
+Human: {input}
+AI:`,
+	})
 }
-
-// async function getVectorChain() {
-// 	try {
-// const vectorStore = await dbService.getVectorStore(memoryOption)
-// const vectorOptions = {
-// 	k: 1,
-// 	returnSourceDocuments: true,
-// 	memory: undefined,
-// }
-// return VectorDBQAChain.fromLLM(gModel, vectorStore, vectorOptions)
-// 	} catch (error) {
-// 		console.error('An error occurred while getting vector chain:', error)
-// 		throw error
-// 	}
-// }
