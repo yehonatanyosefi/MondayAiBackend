@@ -13,8 +13,6 @@ dotenv.config()
 
 const LLM_MODEL = 'gpt-3.5-turbo-16k'
 
-// let gChatHistory = ``
-
 module.exports = {
 	query,
 }
@@ -103,7 +101,7 @@ async function query(prompt, sessionData) {
 	try {
 		const promptFromTemplate = getPromptTemplate()
 		const formattedPrompt = await promptFromTemplate.format({
-			chat_history: gChatHistory,
+			chat_history: sessionData.chatHistory,
 			input: prompt,
 		})
 		const agent = await getAgent(sessionData.boardId)
