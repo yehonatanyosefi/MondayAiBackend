@@ -2,7 +2,7 @@ module.exports = {
 	truncateChatHistory,
 }
 
-function truncateChatHistory(chatHistory, maxWords = 7000, minWords = 25) {
+function truncateChatHistory(chatHistory, maxWords = 2000) {
 	let wordCount = 0
 	const truncatedHistory = []
 
@@ -18,7 +18,7 @@ function truncateChatHistory(chatHistory, maxWords = 7000, minWords = 25) {
 		}
 	}
 
-	return truncatedHistory.reverse()
+	return JSON.stringify(truncatedHistory.reverse())
 }
 
 function addPartialMessageToHistory(truncatedHistory, words, wordCount, maxWords) {

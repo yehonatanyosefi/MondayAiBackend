@@ -45,6 +45,17 @@ async function queryChat(prompt, sessionData) {
 async function getConversationalRetrievalChain(boardId) {
 	try {
 		const vectorStore = await dbService.getVectorStore(boardId)
+		// return VectorDBQAChain.fromLLM(
+		// 	new ChatOpenAI({
+		// 		modelName: LLM_MODEL,
+		// 		temperature: 0,
+		// 	}),
+		// 	vectorStore,
+		// 	{
+		// 		k: 1,
+		// 		returnSourceDocuments: true,
+		// 	}
+		// )
 		return ConversationalRetrievalQAChain.fromLLM(
 			new ChatOpenAI({
 				modelName: LLM_MODEL,
