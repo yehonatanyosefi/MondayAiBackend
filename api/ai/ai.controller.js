@@ -5,11 +5,10 @@ const aiService = require('./ai.service')
 const logger = require('../../services/logger.service')
 
 async function prompt(req, res) {
-	// const { prompt } = req.body
-	const prompt = `What is the best insights I can get from this board?`
+	const { prompt, sessionData } = req.body
+	// const prompt = `What is the best insights I can get from this board?`
 	try {
-		await initializeVars()
-		const response = await llmService.query(prompt)
+		const response = await llmService.query(prompt, sessionData)
 		console.log(`response:`, response)
 		res.status(200).json(response)
 	} catch (err) {
@@ -51,21 +50,6 @@ async function postImg(req, res) {
 // 		// res.status(500).json({ message: 'Error uploading pdf' })
 // 	}
 // }
-
-async function initializeVars(
-	temperature = 0,
-	streaming = false,
-	queryVector = false,
-	memoryOption = false
-) {
-	try {
-		await llmService.initializeVars({ temperature, streaming, queryVector, memoryOption })
-		gInitialized = true
-	} catch (error) {
-		console.error('Error initializing variables', error)
-		throw error
-	}
-}
 
 module.exports = {
 	postImg,
