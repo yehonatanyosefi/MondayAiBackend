@@ -20,7 +20,6 @@ async function uploadToPinecone(inputs, namespace) {
 }
 
 async function uploadDocs(docs, namespace) {
-	console.log('hello')
 	const pineconeArgs = await _getPineconeArgs(namespace)
 	await PineconeStore.fromDocuments(docs, EMBEDDING, pineconeArgs)
 }

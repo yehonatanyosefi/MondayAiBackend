@@ -32,8 +32,8 @@ async function uploadBoard(req, res) {
 	const { boardData, boardId } = req.body
 	try {
 		const rawBoard = JSON.stringify(boardData)
-		const reducedBoard = docService.getReducedText(rawBoard)
-		await dbService.uploadToPinecone([rawBoard], boardId)
+		const reducedBoard = await docService.getReducedText(rawBoard)
+		await dbService.uploadToPinecone(reducedBoard, boardId)
 		console.log('Board uploaded successfully')
 		res.status(200).send({})
 	} catch (err) {
