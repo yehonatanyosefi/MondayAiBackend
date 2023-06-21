@@ -3,7 +3,10 @@ const docService = require('../services/doc.service')
 const llmService = require('../services/llm.service')
 const imgService = require('../services/img.service')
 const logger = require('../../services/logger.service')
-
+// promptAgent(
+// 	{ body: { prompt: 'hello', sessionData: { boardId: '4680419653', chatHistory: [{ Human: 'hi' }] } } },
+// 	{ status: () => {}, json: () => {} }
+// )
 async function promptAgent(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
@@ -15,12 +18,11 @@ async function promptAgent(req, res) {
 		res.status(500).json({ message: 'Failed to get insights' })
 	}
 }
+
 async function prompt(req, res) {
 	const { prompt, sessionData } = req.body
-	console.log('file: ai.controller.js:20 -> sessionData:', sessionData)
 	try {
 		const response = await llmService.queryChat(prompt, sessionData)
-		console.log(`response:`, response)
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
@@ -54,14 +56,17 @@ async function postImg(req, res) {
 	}
 }
 
-// async function uploadPdf(files) {
+// async function uploadPdf(req, res) {
+// 	const { pdfData, boardId } = req.body
 // 	try {
-// 		const reducedChunks = await docService.getReduceDocs(files)
-// 		await dbService.uploadToPinecone(reducedChunks)
+// 		const rawBoard = JSON.stringify(boardData)
+// 		const reducedPdf = await docService.getReducedText(rawBoard)
+// 		await dbService.uploadToPinecone(reducedBoard, boardId)
 // 		console.log('Pdfs uploaded successfully')
+// 		res.status(200).send({})
 // 	} catch (err) {
 // 		console.log(err)
-// 		// res.status(500).json({ message: 'Error uploading pdf' })
+// 		res.status(500).json({ message: 'Error uploading pdfs' })
 // 	}
 // }
 

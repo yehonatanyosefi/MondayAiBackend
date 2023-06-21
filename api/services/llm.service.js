@@ -1,4 +1,5 @@
 const dbService = require('./db.service')
+const aiUtilService = require('./ai-util.service')
 
 const { ConversationalRetrievalQAChain } = require('langchain/chains')
 const { ChatOpenAI } = require('langchain/chat_models/openai')
@@ -19,14 +20,15 @@ module.exports = {
 async function queryChat(prompt, sessionData) {
 	try {
 		const promptFromTemplate = getPromptTemplate()
+		const truncatedChatHistory = aiUtilService.truncateChatHistory(sessionData.chatHistory)
 		const formattedPrompt = await promptFromTemplate.format({
-			chat_history: JSON.stringify(sessionData.chatHistory),
+			chat_history: truncatedChatHistory,
 			input: prompt,
 		})
 		const chain = await getConversationalRetrievalChain(sessionData.boardId)
 		const response = await chain.call({
 			question: formattedPrompt,
-			chat_history: JSON.stringify(sessionData.chatHistory),
+			chat_history: truncatedChatHistory,
 		})
 		// console.log({
 		// 	output: response.text,
@@ -75,10 +77,10 @@ AI:`,
 	})
 }
 
-async function getAgent(boardId) {
+async function getAgent(namespace) {
 	try {
-		const vectorStore = await dbService.getVectorStore(boardId)
-		const model = new OpenAI({
+		const vectorStore = await dbService.getVectorStore(namespace)
+		const model = new ChatOpenAI({
 			modelName: LLM_MODEL,
 			temperature: 0,
 		})
@@ -91,16 +93,17 @@ async function getAgent(boardId) {
 		const agent = createVectorStoreAgent(model, toolkit)
 		return agent
 	} catch (error) {
-		console.error('An error occurred while getting conversational retrieval chain:', error)
+		console.error('An error occurred while getting agent:', error)
 		throw error
 	}
 }
 
 async function queryAgent(prompt, sessionData) {
 	try {
+		const truncatedChatHistory = aiUtilService.truncateChatHistory(sessionData.chatHistory)
 		const promptFromTemplate = getPromptTemplate()
 		const formattedPrompt = await promptFromTemplate.format({
-			chat_history: sessionData.chatHistory,
+			chat_history: JSON.stringify(truncatedChatHistory),
 			input: prompt,
 		})
 		const agent = await getAgent(sessionData.boardId)
