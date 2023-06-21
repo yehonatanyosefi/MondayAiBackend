@@ -1,0 +1,180 @@
+[
+	{
+		"name": "Agile - Roadmap",
+		"groups": [
+			{
+				"title": "Q1 initiatives",
+				"items": [
+					{
+						"name": "Hi there!   👋   Click here to read about this template  →",
+						"column_values": [
+							{
+								"type": "color",
+								"text": null
+							},
+							{
+								"type": "color",
+								"text": null
+							},
+							{
+								"type": "color",
+								"text": "Not Started"
+							}
+						]
+					},
+					{
+						"name": "Improve templates",
+						"column_values": [
+							{
+								"type": "color",
+								"text": "Medium"
+							},
+							{
+								"type": "color",
+								"text": "Yes"
+							},
+							{
+								"type": "color",
+								"text": "Working on it"
+							}
+						]
+					},
+					{
+						"name": "Improve inbox",
+						"column_values": [
+							{
+								"type": "color",
+								"text": "High"
+							},
+							{
+								"type": "color",
+								"text": null
+							},
+							{
+								"type": "color",
+								"text": "Working on it"
+							}
+						]
+					}
+				]
+			},
+			{
+				"title": "Q2 initiatives",
+				"items": [
+					{
+						"name": "Create app store",
+						"column_values": [
+							{
+								"type": "color",
+								"text": "Medium"
+							},
+							{
+								"type": "color",
+								"text": "Yes"
+							},
+							{
+								"type": "color",
+								"text": "Done"
+							}
+						]
+					}
+				]
+			},
+			{
+				"title": "Q3 initiatives",
+				"items": [
+					{
+						"name": "Develop new templates",
+						"column_values": [
+							{
+								"type": "color",
+								"text": "High"
+							},
+							{
+								"type": "color",
+								"text": "Yes"
+							},
+							{
+								"type": "color",
+								"text": "Done"
+							}
+						]
+					},
+					{
+						"name": "Integrations with social media  v5",
+						"column_values": [
+							{
+								"type": "color",
+								"text": "Medium"
+							},
+							{
+								"type": "color",
+								"text": "Working on it"
+							},
+							{
+								"type": "color",
+								"text": "Done"
+							}
+						]
+					},
+					{
+						"name": "Rethink inbox notifications",
+						"column_values": [
+							{
+								"type": "color",
+								"text": "High"
+							},
+							{
+								"type": "color",
+								"text": "Working on it"
+							},
+							{
+								"type": "color",
+								"text": "Done"
+							}
+						]
+					},
+					{
+						"name": "Rethink Q1 Templates",
+						"column_values": [
+							{
+								"type": "color",
+								"text": "High"
+							},
+							{
+								"type": "color",
+								"text": "Yes"
+							},
+							{
+								"type": "color",
+								"text": "Working on it"
+							}
+						]
+					}
+				]
+			},
+			{
+				"title": "Q4 initiatives",
+				"items": [
+					{
+						"name": "New Feature Releases",
+						"column_values": [
+							{
+								"type": "color",
+								"text": null
+							},
+							{
+								"type": "color",
+								"text": null
+							},
+							{
+								"type": "color",
+								"text": "Working on it"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]

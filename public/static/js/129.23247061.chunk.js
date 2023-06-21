@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkpiclash=self.webpackChunkpiclash||[]).push([[129],{2129:function(n,e,i){i.r(e),i.d(e,{default:function(){return r}});var u=i(184);function r(){return(0,u.jsx)("div",{children:"This is not the page you're looking for."})}}}]);
+//# sourceMappingURL=129.23247061.chunk.js.map
