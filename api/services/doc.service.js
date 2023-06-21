@@ -4,6 +4,9 @@ const { Document } = require('langchain/document')
 const dotenv = require('dotenv')
 dotenv.config()
 
+const CHUNK_SIZE = 10000
+const CHUNK_OVERLAP = 1000
+
 async function getReduceDocs(docs) {
 	try {
 		const chunks = await splitToChunks(docs)
@@ -18,8 +21,8 @@ async function getReduceDocs(docs) {
 async function getReducedText(text) {
 	const splitter = new CharacterTextSplitter({
 		separator: ' ',
-		chunkSize: 1000,
-		chunkOverlap: 100,
+		chunkSize: CHUNK_SIZE,
+		chunkOverlap: CHUNK_OVERLAP,
 	})
 	const docs = await splitter.createDocuments([text])
 	return docs
@@ -28,8 +31,8 @@ async function getReducedText(text) {
 async function splitToChunks(docs) {
 	const splitterOptions = {
 		separator: ' ',
-		chunkSize: 1000,
-		chunkOverlap: 100,
+		chunkSize: CHUNK_SIZE,
+		chunkOverlap: CHUNK_OVERLAP,
 	}
 	const splitter = new CharacterTextSplitter(splitterOptions)
 	const chunks = await splitter.splitDocuments(docs)
