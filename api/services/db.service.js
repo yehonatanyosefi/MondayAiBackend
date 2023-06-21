@@ -8,12 +8,11 @@ const EMBEDDING = new OpenAIEmbeddings()
 
 async function uploadToPinecone(inputs, namespace) {
 	try {
-		await _initClient(namespace)
 		if (typeof inputs[0] === 'string') {
-			await uploadTexts(inputs, boardId)
+			await uploadTexts(inputs, namespace)
 			return
 		}
-		await uploadDocs(inputs, boardId)
+		await uploadDocs(inputs, namespace)
 	} catch (err) {
 		console.log('Error Uploading to Pinecone', err)
 		throw err
@@ -21,6 +20,7 @@ async function uploadToPinecone(inputs, namespace) {
 }
 
 async function uploadDocs(docs, namespace) {
+	console.log('hello')
 	const pineconeArgs = await _getPineconeArgs(namespace)
 	await PineconeStore.fromDocuments(docs, EMBEDDING, pineconeArgs)
 }

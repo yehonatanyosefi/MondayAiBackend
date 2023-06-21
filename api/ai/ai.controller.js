@@ -17,10 +17,11 @@ async function promptAgent(req, res) {
 }
 async function prompt(req, res) {
 	const { prompt, sessionData } = req.body
+	console.log('file: ai.controller.js:20 -> sessionData:', sessionData)
 	try {
 		const response = await llmService.queryChat(prompt, sessionData)
 		console.log(`response:`, response)
-		res.status(200).json(response)
+		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
 		res.status(500).json({ message: 'Failed to get insights' })
@@ -32,7 +33,7 @@ async function uploadBoard(req, res) {
 	try {
 		const rawBoard = JSON.stringify(boardData)
 		const reducedBoard = docService.getReducedText(rawBoard)
-		await dbService.uploadToPinecone(reducedBoard, boardId)
+		await dbService.uploadToPinecone([rawBoard], boardId)
 		console.log('Board uploaded successfully')
 		res.status(200).send({})
 	} catch (err) {
@@ -70,5 +71,5 @@ module.exports = {
 	prompt,
 	uploadBoard,
 	// uploadPdf,
-	initializeVars,
+	// initializeVars,
 }
