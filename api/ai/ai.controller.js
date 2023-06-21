@@ -1,40 +1,30 @@
 const dbService = require('../services/db.service')
-const docService = require('../services/doc.service')
+// const docService = require('../services/doc.service')
 const llmService = require('../services/llm.service')
-const fs = require('fs').promises
 const aiService = require('./ai.service')
 const logger = require('../../services/logger.service')
 
-let gInitialized = false
-const DEMO_PROMPT = `what are the most important tasks I have?`
-
-async function loadJson(path) {
-	let jsonFile = await fs.readFile(path, 'utf8')
-	let demoBoard = JSON.parse(jsonFile)
-	return demoBoard
-}
-
 async function prompt(req, res) {
-	const { prompt } = req?.body || { prompt: DEMO_PROMPT }
+	const { prompt } = req.body
 	try {
-		if (!gInitialized) await initializeVars()
+		await initializeVars()
 		const response = await llmService.query(prompt)
 		console.log(`response:`, response)
-		// res.status(200).json(response)
+		res.status(200).json(response)
 	} catch (err) {
 		console.log(err)
-		// res.status(500).json({ message: 'Failed to get insights' })
+		res.status(500).json({ message: 'Failed to get insights' })
 	}
 }
 async function uploadBoard(req, res) {
-	const DEMO_BOARD = await loadJson('./api/ai/json/demo.json')
-	const { boardData } = req?.body || { boardData: JSON.stringify(DEMO_BOARD) }
+	const { boardData, boardId } = req.body
 	try {
-		await dbService.uploadToPinecone(boardData)
+		await dbService.uploadToPinecone(JSON.stringify(boardData), boardId)
 		console.log('Board uploaded successfully')
+		res.status(200).send({})
 	} catch (err) {
 		console.log(err)
-		// res.status(500).json({ message: 'Error uploading board' })
+		res.status(500).json({ message: 'Error uploading board' })
 	}
 }
 

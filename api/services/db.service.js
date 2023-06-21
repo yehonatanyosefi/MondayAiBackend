@@ -7,15 +7,12 @@ dotenv.config()
 
 const EMBEDDING = new OpenAIEmbeddings()
 let gClientIndex = null
-const gOptions = {
-	indexName: process.env.PINECONE_INDEX,
-	namespace: 'demoBoard',
-}
 let gPineconeArgs = null
 
-async function uploadToPinecone(inputs) {
+async function uploadToPinecone(inputs, boardId) {
+	console.log("file: db.service.js:17 -> uploadToPinecone -> boardId:", boardId)
 	try {
-		if (!gClientIndex) await _initClient()
+		if (!gClientIndex) await _initClient(boardId)
 		uploadTexts([inputs])
 		// if (typeof inputs[0] === 'string') {
 		// 	await uploadTexts(inputs)
@@ -43,7 +40,7 @@ async function getVectorStore() {
 	return vectorStore
 }
 
-async function _initClient() {
+async function _initClient(boardId) {
 	try {
 		if (gClientIndex) return
 		const client = new PineconeClient()
@@ -59,7 +56,7 @@ async function _initClient() {
 		gClientIndex = clientIndex
 		gPineconeArgs = {
 			pineconeIndex: gClientIndex,
-			namespace: gOptions.namespace,
+			namespace: boardId.toString(),
 		}
 	} catch (err) {
 		console.error('Failed to initialize Pinecone Client', err)
