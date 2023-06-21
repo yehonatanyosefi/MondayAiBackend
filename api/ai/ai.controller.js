@@ -1,7 +1,7 @@
 const dbService = require('../services/db.service')
 const docService = require('../services/doc.service')
 const llmService = require('../services/llm.service')
-const aiService = require('./ai.service')
+const imgService = require('../services/img.service')
 const logger = require('../../services/logger.service')
 
 async function promptAgent(req, res) {
@@ -44,8 +44,8 @@ async function uploadBoard(req, res) {
 async function postImg(req, res) {
 	try {
 		const { prompt } = req.body
-		const imgUrl = await aiService.genImg(prompt)
-		const newImgUrl = await aiService.uploadImg(imgUrl)
+		const imgUrl = await imgService.genImg(prompt)
+		const newImgUrl = await imgService.uploadImg(imgUrl)
 		res.json(newImgUrl)
 	} catch (err) {
 		logger.error('Failed to post image', err)

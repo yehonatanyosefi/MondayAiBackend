@@ -1,7 +1,6 @@
 const { PineconeClient } = require('@pinecone-database/pinecone')
 const { PineconeStore } = require('langchain/vectorstores/pinecone')
 const { OpenAIEmbeddings } = require('langchain/embeddings/openai')
-// const { VectorOperationsApi } = require('@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch')
 const dotenv = require('dotenv')
 dotenv.config()
 

@@ -1,6 +1,5 @@
 require('dotenv').config()
-const storageService = require('../storage/storage.service')
-
+const storageService = require('./storage.service')
 const fetch = require('cross-fetch')
 const { query } = require('express')
 const Replicate = require('replicate')
@@ -8,26 +7,6 @@ const replicate = new Replicate({
 	auth: process.env.REPLICATE_API_TOKEN,
 	fetch,
 })
-// const { Configuration, OpenAIApi } = require('openai')
-// const configuration = new Configuration({
-// 	apiKey: process.env.OPENAI_API_KEY,
-// })
-// const openai = new OpenAIApi(configuration)
-
-async function dallEGenImg(prompt) {
-	try {
-		// const response = await openai.createImage({
-		// 	prompt,
-		// 	n: 1,
-		// 	size: '1024x1024',
-		// })
-		// const genImgUrl = response.data.data[0].url
-		// return genImgUrl
-	} catch (err) {
-		console.error('Failed to generate image', err)
-		throw err
-	}
-}
 async function genImg(prompt) {
 	try {
 		const output = await replicate.run(
