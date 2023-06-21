@@ -6,9 +6,8 @@ const logger = require('../../services/logger.service')
 
 async function prompt(req, res) {
 	const { prompt, sessionData } = req.body
-	// const prompt = `What is the best insights I can get from this board?`
 	try {
-		const response = await llmService.query(prompt, sessionData)
+		const response = await llmService.queryChat(prompt, sessionData)
 		console.log(`response:`, response)
 		res.status(200).json(response)
 	} catch (err) {
@@ -16,6 +15,7 @@ async function prompt(req, res) {
 		res.status(500).json({ message: 'Failed to get insights' })
 	}
 }
+
 async function uploadBoard(req, res) {
 	const { boardData, boardId } = req.body
 	try {
