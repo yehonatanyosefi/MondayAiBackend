@@ -15,11 +15,11 @@ async function getReduceDocs(docs) {
 	}
 }
 
-async function getReducedText(text, chunkSize = 1000, chunkOverlap = 100) {
+async function getReducedText(text) {
 	const splitter = new CharacterTextSplitter({
 		separator: ' ',
-		chunkSize,
-		chunkOverlap,
+		chunkSize: 1000,
+		chunkOverlap: 100,
 	})
 	const docs = await splitter.createDocuments([text])
 	return docs

@@ -1,12 +1,10 @@
 const dbService = require('./db.service')
+
 const { ConversationalRetrievalQAChain } = require('langchain/chains')
 const { ChatOpenAI } = require('langchain/chat_models/openai')
-const { ConversationSummaryMemory } = require('langchain/memory')
 const { PromptTemplate } = require('langchain/prompts')
 
 const { VectorStoreToolkit, createVectorStoreAgent, VectorStoreInfo } = require('langchain/agents')
-const { OpenAIEmbeddings } = require('langchain/embeddings/openai')
-const { RecursiveCharacterTextSplitter } = require('langchain/text_splitter')
 
 const dotenv = require('dotenv')
 dotenv.config()

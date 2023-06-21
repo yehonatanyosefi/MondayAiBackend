@@ -1,9 +1,20 @@
 const dbService = require('../services/db.service')
-// const docService = require('../services/doc.service')
+const docService = require('../services/doc.service')
 const llmService = require('../services/llm.service')
 const aiService = require('./ai.service')
 const logger = require('../../services/logger.service')
 
+async function promptAgent(req, res) {
+	const { prompt, sessionData } = req.body
+	try {
+		const response = await llmService.queryAgent(prompt, sessionData)
+		console.log(`response from agent:`, response)
+		res.status(200).json(response)
+	} catch (err) {
+		console.log(err)
+		res.status(500).json({ message: 'Failed to get insights' })
+	}
+}
 async function prompt(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
@@ -19,7 +30,9 @@ async function prompt(req, res) {
 async function uploadBoard(req, res) {
 	const { boardData, boardId } = req.body
 	try {
-		await dbService.uploadToPinecone(JSON.stringify(boardData), boardId)
+		const rawBoard = JSON.stringify(boardData)
+		const reducedBoard = docService.getReducedText(rawBoard)
+		await dbService.uploadToPinecone(reducedBoard, boardId)
 		console.log('Board uploaded successfully')
 		res.status(200).send({})
 	} catch (err) {
@@ -53,6 +66,7 @@ async function postImg(req, res) {
 
 module.exports = {
 	postImg,
+	promptAgent,
 	prompt,
 	uploadBoard,
 	// uploadPdf,
