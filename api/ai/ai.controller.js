@@ -72,7 +72,6 @@ async function promptActivity(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
 		const response = await llmService.queryChat(prompt, sessionData, 'activity log of monday.com board')
-		console.log(`response:`, response)
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
