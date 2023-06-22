@@ -10,7 +10,7 @@ const {
 } = require('langchain/prompts')
 const { AgentExecutor } = require('langchain/agents')
 
-const LLM_MODEL = 'gpt-3.5-turbo'
+const LLM_MODEL = 'gpt-3.5-turbo-16k-0613'
 
 module.exports = {
 	queryAgent,
@@ -52,7 +52,7 @@ async function queryAgent(prompt, sessionData) {
 			verbose: true,
 		})
 
-		const result = await executor.run(prompt)
+		const result = await executor.run(`${prompt}, use the board for context`)
 
 		return result
 	} catch (err) {

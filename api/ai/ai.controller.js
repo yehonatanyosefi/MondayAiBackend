@@ -5,24 +5,36 @@ const imgService = require('../services/img.service')
 const agentService = require('../services/agent.service')
 const logger = require('../../services/logger.service')
 
-promptAgent(
-	{
-		body: {
-			prompt: 'what are the best insights i can get from the board',
-			sessionData: { namespace: '4680419653', chatHistory: [{ Human: 'hi' }] },
-		},
-	},
-	{ status: () => {}, json: () => {} }
-)
+// promptChat(
+// 	{
+// 		body: {
+// 			prompt: 'Give me information about the activity logs, what are the events and how many you see',
+// 			sessionData: { namespace: '4671780737_activity_log', chatHistory: [{ Human: 'hi' }] },
+// 		},
+// 	},
+// 	{ status: () => {}, json: () => {} }
+// )
+// promptAgent(
+// 	{
+// 		body: {
+// 			prompt: 'what are the best insights i can get from the board',
+// 			sessionData: { namespace: '4680419653', chatHistory: [{ Human: 'hi' }] },
+// 		},
+// 	},
+// 	{ status: () => {}, json: () => {} }
+// )
 async function promptAgent(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
 		const response = await agentService.queryAgent(prompt, sessionData)
-		console.log(`response from agent:`, response)
-		// res.status(200).json(response)
+		if (!isValidResponse(response)) {
+			promptChat(req, res)
+			return
+		}
+		res.status(200).json(response)
 	} catch (err) {
 		console.log(err)
-		// res.status(500).json({ message: 'Failed to run agent' })
+		res.status(500).json({ message: 'Failed to run agent' })
 	}
 }
 
@@ -30,12 +42,14 @@ async function promptChat(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
 		const response = await llmService.queryChat(prompt, sessionData)
+		console.log(`response:`, response)
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
 		res.status(500).json({ message: 'Failed to get insights' })
 	}
 }
+
 async function promptBoard(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
@@ -119,6 +133,9 @@ module.exports = {
 	promptActivity,
 	uploadActivity,
 	uploadBoard,
-	promptChat,
 	// uploadPdf,
+}
+
+function isValidResponse(response) {
+	return response !== 'Agent stopped due to max iterations.'
 }
