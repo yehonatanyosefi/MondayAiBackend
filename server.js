@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'production') {
 	app.use(express.static(path.resolve(__dirname, "public")))
 } else {
 	const corsOptions = {
-		origin: ['https://1631-82-166-194-193.ngrok-free.app', 'http://localhost:5173', "https://board-assistant-production.up.railway.app/"],
+		origin: ['https://3fb7-82-166-194-193.ngrok-free.app', 'http://localhost:5173', "https://board-assistant-production.up.railway.app/"],
 		credentials: true,
 	}
 	app.use(cors(corsOptions))

@@ -61,7 +61,7 @@ async function promptBoard(req, res) {
 	try {
 		const response = await llmService.queryChat(prompt, sessionData, 'monday.com board')
 		console.log(`response:`, response.text)
-		// res.status(200).json(response.text)
+		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
 		res.status(500).json({ message: 'Failed to get insights' })
