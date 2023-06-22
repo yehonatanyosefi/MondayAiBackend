@@ -5,11 +5,19 @@ const imgService = require('../services/img.service')
 const agentService = require('../services/agent.service')
 const logger = require('../../services/logger.service')
 
-// promptChat(
+// promptActivity(
 // 	{
 // 		body: {
 // 			prompt: 'Give me information about the activity logs, what are the events and how many you see',
-// 			sessionData: { namespace: '4671780737_activity_log', chatHistory: [{ Human: 'hi' }] },
+// 			sessionData: {
+// 				namespace: '4671780737_activity_log',
+// 				chatHistory: [
+// 					{
+// 						Human:
+// 							'Give me information about the activity logs, what are the events and how many you see',
+// 					},
+// 				],
+// 			},
 // 		},
 // 	},
 // 	{ status: () => {}, json: () => {} }
@@ -64,6 +72,7 @@ async function promptActivity(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
 		const response = await llmService.queryChat(prompt, sessionData, 'activity log of monday board')
+		console.log(`response:`, response)
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
