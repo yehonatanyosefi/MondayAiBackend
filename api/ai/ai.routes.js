@@ -13,9 +13,9 @@ const router = express.Router()
 router.post('/prompt/agent', promptAgent)
 router.post('/prompt/board', promptBoard)
 router.post('/prompt/activity', promptActivity)
-router.post('/prompt/update', promptUpdate)
+router.post('/prompt/updates', promptUpdate)
 router.post('/upload/board', uploadJSON)
 router.post('/upload/activity', uploadJSON)
-router.post('/upload/update', uploadJSON)
+router.post('/upload/updates', uploadJSON)
 
 module.exports = router
