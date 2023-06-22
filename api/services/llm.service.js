@@ -10,7 +10,7 @@ const { VectorStoreToolkit, createVectorStoreAgent, VectorStoreInfo } = require(
 const dotenv = require('dotenv')
 dotenv.config()
 
-const LLM_MODEL = 'gpt-3.5-turbo-16k'
+const LLM_MODEL = 'gpt-3.5-turbo-16k-0613'
 
 module.exports = {
 	queryChat,
@@ -25,15 +25,11 @@ async function queryChat(prompt, sessionData) {
 			chat_history: truncatedChatHistory,
 			input: prompt,
 		})
-		const chain = await getConversationalRetrievalChain(sessionData.boardId)
+		const chain = await getChatChain(sessionData.boardId)
 		const response = await chain.call({
 			question: formattedPrompt,
 			chat_history: truncatedChatHistory,
 		})
-		// console.log({
-		// 	output: response.text,
-		// 	sourceDocuments: response.sourceDocuments,
-		// })
 		if (!response?.text) throw new Error('No response text')
 		return response
 	} catch (error) {
@@ -42,28 +38,16 @@ async function queryChat(prompt, sessionData) {
 	}
 }
 
-async function getConversationalRetrievalChain(boardId) {
+async function getChatChain(boardId) {
 	try {
 		const vectorStore = await dbService.getVectorStore(boardId)
-		// return VectorDBQAChain.fromLLM(
-		// 	new ChatOpenAI({
-		// 		modelName: LLM_MODEL,
-		// 		temperature: 0,
-		// 	}),
-		// 	vectorStore,
-		// 	{
-		// 		k: 1,
-		// 		returnSourceDocuments: true,
-		// 	}
-		// )
 		return ConversationalRetrievalQAChain.fromLLM(
 			new ChatOpenAI({
 				modelName: LLM_MODEL,
 				temperature: 0,
 			}),
-			vectorStore.asRetriever(),
+			vectorStore.asRetriever(4),
 			{
-				// k: 4,
 				returnSourceDocuments: true,
 			}
 		)
@@ -76,7 +60,7 @@ async function getConversationalRetrievalChain(boardId) {
 function getPromptTemplate() {
 	return new PromptTemplate({
 		inputVariables: ['chat_history', 'input'],
-		template: `You are a """friendly monday board AI chatbot""" you will only answer as this role.
+		template: `You are a """Friendly Monday.com Board AI Chatbot""" you will only answer as this role.
 			
 You must provide lots of specific details from the board context provided.
 
@@ -84,7 +68,7 @@ History of our conversation:
 {chat_history}
 Current Conversation:
 Human: {input}
-AI:`,
+AI:As a friendly Monday.com Board AI Chatbot with access to the user board context...(continue this line without writing it)`,
 	})
 }
 
