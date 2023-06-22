@@ -14,15 +14,15 @@ const logger = require('../../services/logger.service')
 // 	},
 // 	{ status: () => {}, json: () => {} }
 // )
-// promptAgent(
-// 	{
-// 		body: {
-// 			prompt: 'what are the best insights i can get from the board',
-// 			sessionData: { namespace: '4680419653', chatHistory: [{ Human: 'hi' }] },
-// 		},
-// 	},
-// 	{ status: () => {}, json: () => {} }
-// )
+promptAgent(
+	{
+		body: {
+			prompt: 'what are the best insights i can get from the board',
+			sessionData: { namespace: '4680419653', chatHistory: [{ Human: 'hi' }] },
+		},
+	},
+	{ status: () => {}, json: () => {} }
+)
 async function promptAgent(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
@@ -42,7 +42,6 @@ async function promptChat(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
 		const response = await llmService.queryChat(prompt, sessionData)
-		console.log(`response:`, response)
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
