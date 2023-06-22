@@ -35,7 +35,7 @@ async function promptAgent(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
 		const response = await agentService.queryAgent(prompt, sessionData)
-		if (!isValidResponse(response)) {
+		if (response === 'Agent stopped due to max iterations.') {
 			promptChat(req, res)
 			return
 		}
@@ -113,8 +113,4 @@ module.exports = {
 	promptActivity,
 	promptUpdate,
 	uploadJSON,
-}
-
-function isValidResponse(response) {
-	return response !== 'Agent stopped due to max iterations.'
 }
