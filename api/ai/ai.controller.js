@@ -4,17 +4,16 @@ const llmService = require('../services/llm.service')
 const imgService = require('../services/img.service')
 const agentService = require('../services/agent.service')
 const logger = require('../../services/logger.service')
-
-// promptActivity(
+// const PROMPT_TO_SEND = `What are some potential bottlenecks in our current workflow?`
+// promptBoard(
 // 	{
 // 		body: {
-// 			prompt: 'Give me information about the activity logs, what are the events and how many you see',
+// 			prompt: PROMPT_TO_SEND,
 // 			sessionData: {
-// 				namespace: '4671780737_activity_log',
+// 				namespace: '4671780737',
 // 				chatHistory: [
 // 					{
-// 						Human:
-// 							'Give me information about the activity logs, what are the events and how many you see',
+// 						Human: PROMPT_TO_SEND,
 // 					},
 // 				],
 // 			},
@@ -61,7 +60,8 @@ async function promptBoard(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
 		const response = await llmService.queryChat(prompt, sessionData, 'monday.com board')
-		res.status(200).json(response.text)
+		console.log(`response:`, response.text)
+		// res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
 		res.status(500).json({ message: 'Failed to get insights' })
