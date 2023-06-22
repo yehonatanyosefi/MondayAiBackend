@@ -1,1 +1,0 @@
-{"version":3,"file":"static/js/129.23247061.chunk.js","mappings":"iKACe,SAASA,IACtB,OACEC,EAAAA,EAAAA,KAAA,OAAAC,SAAK,4CAIT,C","sources":["views/NotFound.jsx"],"sourcesContent":["\nexport default function NotFound() {\n  return (\n    <div>\n      This is not the page you're looking for.\n    </div>\n  )\n}\n"],"names":["NotFound","_jsx","children"],"sourceRoot":""}

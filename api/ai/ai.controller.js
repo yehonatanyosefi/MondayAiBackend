@@ -70,6 +70,8 @@ async function promptBoard(req, res) {
 
 async function promptActivity(req, res) {
 	const { prompt, sessionData } = req.body
+	console.log("file: ai.controller.js:65 -> promptActivity -> prompt:", prompt)
+	console.log("file: ai.controller.js:65 -> promptActivity -> sessionData:", sessionData)
 	try {
 		const response = await llmService.queryChat(prompt, sessionData, 'activity log of monday.com board')
 		res.status(200).json(response.text)
@@ -81,6 +83,9 @@ async function promptActivity(req, res) {
 
 async function uploadJSON(req, res) {
 	const { data, namespace } = req.body
+	console.log("file: ai.controller.js:78 -> uploadActivity -> namespace:", namespace)
+	console.log("file: ai.controller.js:78 -> uploadActivity -> data:", data)
+
 	try {
 		const stringJSON = JSON.stringify(data)
 		const reducedJSON = await docService.getReducedText(stringJSON)
