@@ -8,7 +8,11 @@ const TOOL_NAME = 'monday-board-tool'
 const TOOL_DESCRIPTION = 'This tool answer questions about the monday board the use has.'
 const MODEL_NAME = 'gpt-3.5-turbo-16k-0613'
 
-export class VectorTool extends Tool {
+module.exports = {
+	VectorTool,
+}
+
+class VectorTool extends Tool {
 	name = TOOL_NAME
 
 	description = TOOL_DESCRIPTION
@@ -36,8 +40,8 @@ class VectorChain extends BaseChain {
 	inputKeys = ['data']
 	outputKeys = ['res']
 
-	async _call(inputs) {
-		const vectorStore = await dbService.getVectorStore()
+	async _call(inputs, namespace) {
+		const vectorStore = await dbService.getVectorStore(namespace)
 
 		const model = new OpenAI({
 			temperature: 0,
@@ -54,17 +58,17 @@ class VectorChain extends BaseChain {
 
 		const retrievedContext = await vectorStore.similaritySearch(sanitizedQuestion, 4)
 
-		var context = ''
+		let context = ''
 
 		retrievedContext.forEach((document) => {
 			context += document['pageContent']
 		})
 
-		var QA_PROMPT = `Les informations de contexte sont ci-dessous. 
+		let QA_PROMPT = `Background information is below. 
       ---------------------
       ${context}
       ---------------------
-      Compte tenu des informations contextuelles et non des connaissances préalables, répondez à la question suivante : ${sanitizedQuestion} ?:
+      Given background information, not prior knowledge, answer the following question : ${sanitizedQuestion} ?:
       
       `
 
