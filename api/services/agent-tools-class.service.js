@@ -4,8 +4,9 @@ const { Tool } = require('langchain/tools')
 const { OpenAI } = require('langchain/llms/openai')
 const { BaseChain } = require('langchain/chains')
 
-const TOOL_NAME = 'monday-board-tool'
-const TOOL_DESCRIPTION = 'This tool answer questions about the monday board the user has.'
+const TOOL_NAME = 'monday-board-semantic-answerer'
+const TOOL_DESCRIPTION =
+	'This tool answer questions about the monday board the user has, useful to get context about monday board.'
 const MODEL_NAME = 'gpt-3.5-turbo-16k-0613'
 
 class VectorToolClass extends Tool {

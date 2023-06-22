@@ -52,7 +52,7 @@ async function queryAgent(prompt, sessionData) {
 			verbose: true,
 		})
 
-		const result = await executor.run(`${prompt}, use the board for context`)
+		const result = await executor.run(prompt)
 
 		return result
 	} catch (err) {
