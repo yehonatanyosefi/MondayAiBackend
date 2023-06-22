@@ -3,10 +3,9 @@ const {
 	postImg,
 	promptBoard,
 	promptActivity,
+	promptUpdate,
 	promptAgent,
-	// uploadJson,
-	uploadBoard,
-	uploadActivity,
+	uploadJSON,
 } = require('./ai.controller')
 const router = express.Router()
 
@@ -14,9 +13,9 @@ const router = express.Router()
 router.post('/prompt/agent', promptAgent)
 router.post('/prompt/board', promptBoard)
 router.post('/prompt/activity', promptActivity)
-// router.post('/upload/json', uploadJson)
-router.post('/upload/board', uploadBoard)
-router.post('/upload/activity', uploadActivity)
+router.post('/prompt/update', promptUpdate)
+router.post('/upload/board', uploadJSON)
+router.post('/upload/activity', uploadJSON)
 
 module.exports = router
 
