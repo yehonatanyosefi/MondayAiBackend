@@ -5,12 +5,15 @@ const imgService = require('../services/img.service')
 const agentService = require('../services/agent.service')
 const logger = require('../../services/logger.service')
 
-// promptAgent(
-// 	{
-// 		body: { prompt: 'hello', sessionData: { namespace: '4680419653', chatHistory: [{ Human: 'hi' }] } },
-// 	},
-// 	{ status: () => {}, json: () => {} }
-// )
+promptAgent(
+	{
+		body: {
+			prompt: 'what are the best insights i can get from the board',
+			sessionData: { namespace: '4680419653', chatHistory: [{ Human: 'hi' }] },
+		},
+	},
+	{ status: () => {}, json: () => {} }
+)
 async function promptAgent(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
@@ -56,9 +59,9 @@ async function promptActivity(req, res) {
 }
 
 async function uploadActivity(req, res) {
-	const { activityData, namespace } = req.body
+	const { data, namespace } = req.body
 	try {
-		const rawActivities = JSON.stringify(activityData)
+		const rawActivities = JSON.stringify(data)
 		const reducedBoard = await docService.getReducedText(rawActivities)
 		await dbService.uploadToPinecone(reducedBoard, namespace)
 		console.log('Activity log uploaded successfully')
@@ -70,9 +73,9 @@ async function uploadActivity(req, res) {
 }
 
 async function uploadBoard(req, res) {
-	const { boardData, namespace } = req.body
+	const { data, namespace } = req.body
 	try {
-		const rawBoard = JSON.stringify(boardData)
+		const rawBoard = JSON.stringify(data)
 		const reducedBoard = await docService.getReducedText(rawBoard)
 		await dbService.uploadToPinecone(reducedBoard, namespace)
 		console.log('Board uploaded successfully')
