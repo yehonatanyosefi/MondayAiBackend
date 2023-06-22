@@ -4,8 +4,8 @@ const { Document } = require('langchain/document')
 const dotenv = require('dotenv')
 dotenv.config()
 
-const CHUNK_SIZE = 10000
-const CHUNK_OVERLAP = 1000
+const CHUNK_SIZE = 2000
+const CHUNK_OVERLAP = 500
 
 async function getReduceDocs(docs) {
 	try {

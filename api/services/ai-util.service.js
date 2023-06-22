@@ -35,5 +35,7 @@ function addPartialMessageToHistory(truncatedHistory, words, wordCount, maxWords
 }
 
 function getWordsFromMessage(message) {
-	return (message['Human'] || message['AI']).split(' ')
+	const text = message['Human'] || message['AI']
+	const wordsEquivalent = Math.floor(text.length / 5)
+	return new Array(wordsEquivalent).fill('')
 }
