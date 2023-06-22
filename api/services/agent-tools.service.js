@@ -2,25 +2,26 @@ const dbService = require('./db.service')
 
 const { Tool } = require('langchain/tools')
 const { OpenAI } = require('langchain/llms/openai')
-const { BaseChain } = require('langchain/chains/base.chain')
+const { BaseChain } = require('langchain/chains')
 
 const TOOL_NAME = 'monday-board-tool'
-const TOOL_DESCRIPTION = 'This tool answer questions about the monday board the use has.'
+const TOOL_DESCRIPTION = 'This tool answer questions about the monday board the user has.'
 const MODEL_NAME = 'gpt-3.5-turbo-16k-0613'
-
-module.exports = {
-	VectorTool,
-}
 
 class VectorTool extends Tool {
 	name = TOOL_NAME
 
 	description = TOOL_DESCRIPTION
 
+	constructor(namespace) {
+		super()
+		this.namespace = namespace
+	}
+
 	async _call(arg) {
 		try {
 			// Perform your custom tool logic here with the input text
-			const chain = await new VectorChain().call(arg)
+			const chain = await new VectorChain(this.namespace).call(arg)
 			// and return the output text
 			return `Response: ${chain.res}`
 		} catch (err) {
@@ -31,6 +32,11 @@ class VectorTool extends Tool {
 }
 
 class VectorChain extends BaseChain {
+	constructor(namespace) {
+		super()
+		this.namespace = namespace
+	}
+
 	_chainType() {
 		throw new Error('Method not implemented.')
 	}
@@ -40,8 +46,8 @@ class VectorChain extends BaseChain {
 	inputKeys = ['data']
 	outputKeys = ['res']
 
-	async _call(inputs, namespace) {
-		const vectorStore = await dbService.getVectorStore(namespace)
+	async _call(inputs) {
+		const vectorStore = await dbService.getVectorStore(this.namespace)
 
 		const model = new OpenAI({
 			temperature: 0,
@@ -76,4 +82,8 @@ class VectorChain extends BaseChain {
 
 		return { res }
 	}
+}
+
+module.exports = {
+	VectorTool,
 }

@@ -1,11 +1,20 @@
 const express = require('express')
-const { postImg, uploadBoard, prompt, promptAgent } = require('./ai.controller')
+const {
+	postImg,
+	promptActivity,
+	promptBoard,
+	promptAgent,
+	uploadBoard,
+	uploadActivity,
+} = require('./ai.controller')
 const router = express.Router()
 
 // router.post('/genImg', postImg)
 router.post('/promptAgent', promptAgent)
-router.post('/prompt', prompt)
+router.post('/promptBoard', promptBoard)
+router.post('/promptActivity', promptActivity)
 router.post('/uploadBoard', uploadBoard)
+router.post('/uploadActivity', uploadActivity)
 
 module.exports = router
 

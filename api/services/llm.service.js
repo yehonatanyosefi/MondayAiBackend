@@ -5,7 +5,7 @@ const { ConversationalRetrievalQAChain } = require('langchain/chains')
 const { ChatOpenAI } = require('langchain/chat_models/openai')
 const { PromptTemplate } = require('langchain/prompts')
 
-const { VectorStoreToolkit, createVectorStoreAgent, VectorStoreInfo } = require('langchain/agents')
+const { VectorStoreToolkit, createVectorStoreAgent } = require('langchain/agents')
 
 const dotenv = require('dotenv')
 dotenv.config()
@@ -25,7 +25,7 @@ async function queryChat(prompt, sessionData) {
 			chat_history: truncatedChatHistory,
 			input: prompt,
 		})
-		const chain = await getChatChain(sessionData.boardId)
+		const chain = await getChatChain(sessionData.namespace)
 		const response = await chain.call({
 			question: formattedPrompt,
 			chat_history: truncatedChatHistory,
@@ -38,9 +38,9 @@ async function queryChat(prompt, sessionData) {
 	}
 }
 
-async function getChatChain(boardId) {
+async function getChatChain(namespace) {
 	try {
-		const vectorStore = await dbService.getVectorStore(boardId)
+		const vectorStore = await dbService.getVectorStore(namespace)
 		return ConversationalRetrievalQAChain.fromLLM(
 			new ChatOpenAI({
 				modelName: LLM_MODEL,
@@ -101,7 +101,7 @@ async function queryAgent(prompt, sessionData) {
 			chat_history: JSON.stringify(truncatedChatHistory),
 			input: prompt,
 		})
-		const agent = await getAgent(sessionData.boardId)
+		const agent = await getAgent(sessionData.namespace)
 		const response = await agent.call({ input: formattedPrompt })
 		return response
 	} catch (error) {
