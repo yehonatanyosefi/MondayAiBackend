@@ -62,8 +62,11 @@ async function promptBoard(req, res) {
 
 async function promptActivity(req, res) {
 	const { prompt, sessionData } = req.body
+	console.log("file: ai.controller.js:65 -> promptActivity -> prompt:", prompt)
+	console.log("file: ai.controller.js:65 -> promptActivity -> sessionData:", sessionData)
 	try {
 		const response = await llmService.queryChat(prompt, sessionData, 'activity log of monday board')
+		console.log("file: ai.controller.js:68 -> promptActivity -> response:", response)
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
@@ -73,6 +76,9 @@ async function promptActivity(req, res) {
 
 async function uploadActivity(req, res) {
 	const { data, namespace } = req.body
+	console.log("file: ai.controller.js:78 -> uploadActivity -> namespace:", namespace)
+	console.log("file: ai.controller.js:78 -> uploadActivity -> data:", data)
+
 	try {
 		const rawActivities = JSON.stringify(data)
 		const reducedBoard = await docService.getReducedText(rawActivities)
