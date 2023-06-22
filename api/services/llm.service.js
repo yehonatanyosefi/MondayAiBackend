@@ -17,9 +17,9 @@ module.exports = {
 	queryAgent,
 }
 
-async function queryChat(prompt, sessionData) {
+async function queryChat(prompt, sessionData, contextType) {
 	try {
-		const promptFromTemplate = getPromptTemplate()
+		const promptFromTemplate = getPromptTemplate(contextType)
 		const truncatedChatHistory = aiUtilService.truncateChatHistory(sessionData.chatHistory)
 		const formattedPrompt = await promptFromTemplate.format({
 			chat_history: truncatedChatHistory,
@@ -57,12 +57,12 @@ async function getChatChain(namespace) {
 	}
 }
 
-function getPromptTemplate() {
+function getPromptTemplate(contextType) {
 	return new PromptTemplate({
 		inputVariables: ['chat_history', 'input'],
 		template: `You are a """Friendly Monday.com Board AI Chatbot""" you will only answer as this role.
 			
-You must provide lots of specific details from the board context provided.
+You must provide lots of specific details from the ${contextType} context provided.
 
 History of our conversation:
 {chat_history}

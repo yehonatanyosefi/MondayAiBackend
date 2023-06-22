@@ -36,7 +36,7 @@ async function promptChat(req, res) {
 async function promptBoard(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
-		const response = await llmService.queryChat(prompt, sessionData)
+		const response = await llmService.queryChat(prompt, sessionData, 'monday board')
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
@@ -47,7 +47,7 @@ async function promptBoard(req, res) {
 async function promptActivity(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
-		const response = await llmService.queryChat(prompt, sessionData)
+		const response = await llmService.queryChat(prompt, sessionData, 'activity log of monday board')
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)

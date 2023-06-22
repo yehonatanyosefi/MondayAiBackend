@@ -59,37 +59,45 @@ module.exports = {
 // }
 
 async function queryAgent(prompt, sessionData) {
-	const llm = new ChatOpenAI({
-	temperature: 0.7,
-	modelName: 'gpt-3.5-turbo',
-})
+	research = await researchAgent('research about pokemon')
+	console.log({ research })
 
-const chatPrompt = ChatPromptTemplate.fromPromptMessages([
-	SystemMessagePromptTemplate.fromTemplate(
-		'You are a helpful social media assistant that provides research, new content, and advice to me. \n You are given the transcript of the video: {transcript} \n and video metadata: {metadata} as well as additional research: {research}'
-	),
-	HumanMessagePromptTemplate.fromTemplate(
-		'{input}. Remember to use the video transcript and research as reference.'
-	),
-])
-
-const question = `Write me a script for a new video that provides commentary on this video in a lighthearted, joking manner. It should compliment ${topic} with puns.`
-
-chain = new LLMChain({
-	prompt: chatPrompt,
-	llm: llm,
-})
-let response
-
-try {
-	response = await chain.call({
-		transcript,
-		metadata: metadataString,
-		research,
-		input: question,
-	})
-} catch (error) {
-	console.error(`An error occurred during the call to chain: ${error.message}`)
-	response = { text: '' } // Provide an empty response or a default value
+	const response = await initChain(transcript, metadataString, research, topic)
+	
 }
+async function researchAgent() {
+	const llm = new ChatOpenAI({
+		temperature: 0.7,
+		modelName: 'gpt-3.5-turbo',
+	})
+
+	const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+		SystemMessagePromptTemplate.fromTemplate(
+			'You are a helpful social media assistant that provides research, new content, and advice to me. \n You are given the transcript of the video: {transcript} \n and video metadata: {metadata} as well as additional research: {research}'
+		),
+		HumanMessagePromptTemplate.fromTemplate(
+			'{input}. Remember to use the video transcript and research as reference.'
+		),
+	])
+
+	const question = `Write me a script for a new video that provides commentary on this video in a lighthearted, joking manner. It should compliment ${topic} with puns.`
+
+	chain = new LLMChain({
+		prompt: chatPrompt,
+		llm: llm,
+	})
+	let response
+
+	try {
+		response = await chain.call({
+			transcript,
+			metadata: metadataString,
+			research,
+			input: question,
+		})
+	} catch (error) {
+		console.error(`An error occurred during the call to chain: ${error.message}`)
+		response = { text: '' } // Provide an empty response or a default value
+	}
+	return response
 }
