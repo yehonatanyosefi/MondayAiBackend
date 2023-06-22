@@ -14,15 +14,15 @@ const logger = require('../../services/logger.service')
 // 	},
 // 	{ status: () => {}, json: () => {} }
 // )
-promptAgent(
-	{
-		body: {
-			prompt: 'what are the best insights i can get from the board',
-			sessionData: { namespace: '4680419653', chatHistory: [{ Human: 'hi' }] },
-		},
-	},
-	{ status: () => {}, json: () => {} }
-)
+// promptAgent(
+// 	{
+// 		body: {
+// 			prompt: 'what are the best insights i can get from the board',
+// 			sessionData: { namespace: '4680419653', chatHistory: [{ Human: 'hi' }] },
+// 		},
+// 	},
+// 	{ status: () => {}, json: () => {} }
+// )
 async function promptAgent(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
