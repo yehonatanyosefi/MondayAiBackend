@@ -68,7 +68,7 @@ History of our conversation:
 {chat_history}
 Current Conversation:
 Human: {input}
-AI:As a friendly Monday.com Board AI Chatbot with access to the user board context...(continue this line without writing it)`,
+AI:As a friendly Monday.com Board AI Chatbot with access to the user board context, I will do my best to give you an answer...(continue this line without writing it)`,
 	})
 }
 
