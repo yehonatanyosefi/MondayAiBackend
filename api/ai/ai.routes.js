@@ -10,11 +10,11 @@ const {
 const router = express.Router()
 
 // router.post('/genImg', postImg)
-router.post('/promptAgent', promptAgent)
-router.post('/promptBoard', promptBoard)
-router.post('/promptActivity', promptActivity)
-router.post('/uploadBoard', uploadBoard)
-router.post('/uploadActivity', uploadActivity)
+router.post('/prompt/agent', promptAgent)
+router.post('/prompt/board', promptBoard)
+router.post('/prompt/activity', promptActivity)
+router.post('/upload/board', uploadBoard)
+router.post('/upload/activity', uploadActivity)
 
 module.exports = router
 
