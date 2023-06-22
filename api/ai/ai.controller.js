@@ -5,11 +5,19 @@ const imgService = require('../services/img.service')
 const agentService = require('../services/agent.service')
 const logger = require('../../services/logger.service')
 
-// promptChat(
+// promptActivity(
 // 	{
 // 		body: {
 // 			prompt: 'Give me information about the activity logs, what are the events and how many you see',
-// 			sessionData: { namespace: '4671780737_activity_log', chatHistory: [{ Human: 'hi' }] },
+// 			sessionData: {
+// 				namespace: '4671780737_activity_log',
+// 				chatHistory: [
+// 					{
+// 						Human:
+// 							'Give me information about the activity logs, what are the events and how many you see',
+// 					},
+// 				],
+// 			},
 // 		},
 // 	},
 // 	{ status: () => {}, json: () => {} }
@@ -27,7 +35,7 @@ async function promptAgent(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
 		const response = await agentService.queryAgent(prompt, sessionData)
-		if (!isValidResponse(response)) {
+		if (response === 'Agent stopped due to max iterations.') {
 			promptChat(req, res)
 			return
 		}
@@ -38,10 +46,10 @@ async function promptAgent(req, res) {
 	}
 }
 
-async function promptChat(req, res) {
+async function promptUpdate(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
-		const response = await llmService.queryChat(prompt, sessionData)
+		const response = await llmService.queryChat(prompt, sessionData, 'item updates of monday.com board')
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
@@ -52,7 +60,7 @@ async function promptChat(req, res) {
 async function promptBoard(req, res) {
 	const { prompt, sessionData } = req.body
 	try {
-		const response = await llmService.queryChat(prompt, sessionData, 'monday board')
+		const response = await llmService.queryChat(prompt, sessionData, 'monday.com board')
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
@@ -65,8 +73,7 @@ async function promptActivity(req, res) {
 	console.log("file: ai.controller.js:65 -> promptActivity -> prompt:", prompt)
 	console.log("file: ai.controller.js:65 -> promptActivity -> sessionData:", sessionData)
 	try {
-		const response = await llmService.queryChat(prompt, sessionData, 'activity log of monday board')
-		console.log("file: ai.controller.js:68 -> promptActivity -> response:", response)
+		const response = await llmService.queryChat(prompt, sessionData, 'activity log of monday.com board')
 		res.status(200).json(response.text)
 	} catch (err) {
 		console.log(err)
@@ -74,30 +81,16 @@ async function promptActivity(req, res) {
 	}
 }
 
-async function uploadActivity(req, res) {
+async function uploadJSON(req, res) {
 	const { data, namespace } = req.body
 	console.log("file: ai.controller.js:78 -> uploadActivity -> namespace:", namespace)
 	console.log("file: ai.controller.js:78 -> uploadActivity -> data:", data)
 
 	try {
-		const rawActivities = JSON.stringify(data)
-		const reducedBoard = await docService.getReducedText(rawActivities)
-		await dbService.uploadToPinecone(reducedBoard, namespace)
-		console.log('Activity log uploaded successfully')
-		res.status(200).send({})
-	} catch (err) {
-		console.log(err)
-		res.status(500).json({ message: 'Error uploading board' })
-	}
-}
-
-async function uploadBoard(req, res) {
-	const { data, namespace } = req.body
-	try {
-		const rawBoard = JSON.stringify(data)
-		const reducedBoard = await docService.getReducedText(rawBoard)
-		await dbService.uploadToPinecone(reducedBoard, namespace)
-		console.log('Board uploaded successfully')
+		const stringJSON = JSON.stringify(data)
+		const reducedJSON = await docService.getReducedText(stringJSON)
+		await dbService.uploadToPinecone(reducedJSON, namespace)
+		console.log('Data uploaded successfully')
 		res.status(200).send({})
 	} catch (err) {
 		console.log(err)
@@ -117,30 +110,11 @@ async function postImg(req, res) {
 	}
 }
 
-// async function uploadPdf(req, res) {
-// 	const { pdfData, namespace } = req.body
-// 	try {
-// 		const rawBoard = JSON.stringify(boardData)
-// 		const reducedPdf = await docService.getReducedText(rawBoard)
-// 		await dbService.uploadToPinecone(reducedBoard, namespace)
-// 		console.log('Pdfs uploaded successfully')
-// 		res.status(200).send({})
-// 	} catch (err) {
-// 		console.log(err)
-// 		res.status(500).json({ message: 'Error uploading pdfs' })
-// 	}
-// }
-
 module.exports = {
 	postImg,
 	promptAgent,
 	promptBoard,
 	promptActivity,
-	uploadActivity,
-	uploadBoard,
-	// uploadPdf,
-}
-
-function isValidResponse(response) {
-	return response !== 'Agent stopped due to max iterations.'
+	promptUpdate,
+	uploadJSON,
 }
